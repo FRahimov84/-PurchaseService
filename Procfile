@@ -1,1 +1,1 @@
-web: product
+web: purchase

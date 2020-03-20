@@ -1,1 +1,1 @@
-https://product-servisss.herokuapp.com/
+https://purchase-servisss.herokuapp.com/
