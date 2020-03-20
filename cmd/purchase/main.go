@@ -5,8 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/FRahimov84/Mux/pkg/mux"
-	"github.com/FRahimov84/ProductService/pkg/core/product"
 	"github.com/FRahimov84/PurchaseService/cmd/purchase/app"
+	"github.com/FRahimov84/PurchaseService/pkg/core/purchase"
 	"github.com/FRahimov84/di/pkg/di"
 	"github.com/FRahimov84/myJwt/pkg/jwt"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -50,7 +50,7 @@ func start(addr string, dsn string,  secret jwt.Secret) {
 	container.Provide(
 		app.NewServer,
 		mux.NewExactMux,
-		product.NewService,
+		purchase.NewService,
 		func() DSN { return DSN(dsn) },
 		func() jwt.Secret { return secret },
 		func(dsn DSN) *pgxpool.Pool {

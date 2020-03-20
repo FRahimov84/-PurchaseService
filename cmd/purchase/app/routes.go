@@ -3,11 +3,11 @@ package app
 import (
 	"context"
 	"errors"
-	"github.com/FRahimov84/ProductService/pkg/core/token"
-	"github.com/FRahimov84/ProductService/pkg/mux/middleware/authenticated"
-	"github.com/FRahimov84/ProductService/pkg/mux/middleware/authorized"
-	"github.com/FRahimov84/ProductService/pkg/mux/middleware/jwt"
-	"github.com/FRahimov84/ProductService/pkg/mux/middleware/logger"
+	"github.com/FRahimov84/PurchaseService/pkg/core/token"
+	"github.com/FRahimov84/PurchaseService/pkg/mux/middleware/authenticated"
+	"github.com/FRahimov84/PurchaseService/pkg/mux/middleware/authorized"
+	"github.com/FRahimov84/PurchaseService/pkg/mux/middleware/jwt"
+	"github.com/FRahimov84/PurchaseService/pkg/mux/middleware/logger"
 	"reflect"
 )
 
@@ -19,13 +19,14 @@ func (s Server) InitRoutes() {
 	}
 	defer conn.Release()
 	_, err = conn.Exec(context.Background(), `
-CREATE TABLE if not exists products (
-             id BIGSERIAL PRIMARY KEY,
-             name TEXT NOT NULL unique,
-             description TEXT NOT NULL,
-             price Integer check ( price>=0 ) NOT NULL,
-             pic varchar NOT NULL,
-             removed BOOLEAN DEFAULT FALSE
+create table if not exists purchase (
+    id BIGSERIAL primary key,
+    user_id integer not null,
+    product_id integer not null,
+    price integer not null check ( price>=0 ),
+    kol integer not null check ( kol>0 ),
+    purchase_date date default current_date,
+    removed BOOLEAN DEFAULT FALSE
 );
 `)
 	if err != nil {
@@ -33,37 +34,28 @@ CREATE TABLE if not exists products (
 	}
 
 	s.router.GET(
-		"/api/products",
-		s.handleProductList(),
+		"/api/purchase",
+		s.handlePurchaseList(),
 		authenticated.Authenticated(jwt.IsContextNonEmpty),
+		authorized.Authorized([]string{"Admin"}, jwt.FromContext),
 		jwt.JWT(reflect.TypeOf((*token.Payload)(nil)).Elem(), s.secret),
 		logger.Logger("get list"),
 	)
 
 	s.router.GET(
-		"/api/products/{id}",
-		s.handleProductByID(),
+		"/api/purchase/me",
+		s.handlePurchaseByUser(),
 		authenticated.Authenticated(jwt.IsContextNonEmpty),
 		jwt.JWT(reflect.TypeOf((*token.Payload)(nil)).Elem(), s.secret),
 		logger.Logger("get purchase by id"),
 	)
 
 	s.router.POST(
-		"/api/products/new",
-		s.handleNewProduct(),
+		"/api/purchase/new",
+		s.handleNewPurchase(),
 		authenticated.Authenticated(jwt.IsContextNonEmpty),
-		authorized.Authorized([]string{"Admin"}, jwt.FromContext),
 		jwt.JWT(reflect.TypeOf((*token.Payload)(nil)).Elem(), s.secret),
 		logger.Logger("post new purchase"),
-	)
-
-	s.router.DELETE(
-		"/api/products/{id}",
-		s.handleDeleteProduct(),
-		authenticated.Authenticated(jwt.IsContextNonEmpty),
-		authorized.Authorized([]string{"Admin"}, jwt.FromContext),
-		jwt.JWT(reflect.TypeOf((*token.Payload)(nil)).Elem(), s.secret),
-		logger.Logger("delete purchase"),
 	)
 
 

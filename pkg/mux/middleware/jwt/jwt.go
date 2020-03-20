@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-type contextKey string // int?
-var payloadContextKey = contextKey("jwt")
+type ContextKey string // int?
+var payloadContextKey = ContextKey("jwt")
 
 func JWT(payloadType reflect.Type, secret jwtcore.Secret) func(next http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
