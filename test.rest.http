@@ -1,0 +1,58 @@
+POST https://auth-servisss.herokuapp.com/api/tokens
+Content-Type: application/json
+
+{
+  "username": "RendL",
+  "password": "pass"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+###
+
+POST https://auth-servisss.herokuapp.com/api/users/new
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "username": "MOMOO",
+  "password": "MOMOO"
+}
+
+###
+
+POST https://auth-servisss.herokuapp.com/api/tokens
+Content-Type: application/json
+
+{
+  "username": "MOMOO",
+  "password": "MOMOO"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+###
+
+GET https://product-servisss.herokuapp.com/api/products
+Authorization: Bearer {{auth_token}}
+
+###
+
+POST https://product-servisss.herokuapp.com/api/products/new
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Cola-3",
+  "description": "black drink",
+  "price": 600,
+  "pic": "55d"
+}
+
+###
+
+DELETE https://product-servisss.herokuapp.com/api/products/3
+Authorization: Bearer {{auth_token}}
+
+###
+
