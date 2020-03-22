@@ -2,7 +2,7 @@ package authorized
 
 import (
 	"context"
-	"github.com/FRahimov84/ProductService/pkg/core/token"
+	"github.com/FRahimov84/PurchaseService/pkg/core/token"
 	"log"
 	"net/http"
 )

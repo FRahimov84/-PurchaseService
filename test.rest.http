@@ -10,18 +10,24 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:9999/api/purchase/me
+GET http://localhost:9999/api/purchases/users/1
 Authorization: Bearer {{auth_token}}
 
 ###
-POST http://localhost:9999/api/purchase/new
+
+DELETE http://localhost:9999/api/purchases/1
+Authorization: Bearer {{auth_token}}
+
+###
+POST http://localhost:9999/api/purchases/0
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
   "product_id": 20,
   "price": 2121,
-  "kol": 121
+  "quantity": 121,
+  "pic": "dsdsdsd"
 }
 
 ###
